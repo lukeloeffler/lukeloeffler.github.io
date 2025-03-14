@@ -13,9 +13,10 @@ body {
 }
 
 .container {
-    width: 80%;
-    max-width: 1200px; /*Limit the maximum width on larger screens */
+    width: 100%;
+    max-width: 1200px; /* Limit the maximum width on larger screens */
     margin: 0 auto;
+    padding: 0 5%; /* Add some padding on the left and right for desktops */
 }
 
 /* Header and Navigation */
@@ -23,6 +24,9 @@ header {
     background-color: #2d3142; /* Dark blue-gray */
     padding: 20px 0;
     text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 nav ul {
@@ -65,7 +69,8 @@ nav ul li a:hover {
 }
 
 .linkedin-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     margin-top: 30px;
     padding: 10px 20px;
     background-color: #ef8354; /* Soft orange */
@@ -79,56 +84,66 @@ nav ul li a:hover {
     background-color: #4f5d75; /* Muted blue-gray */
 }
 
+.linkedin-icon {
+    width: 25px; /* Adjust size as needed */
+    height: auto;
+    margin-right: 10px; /* Adds space between the icon and text */
+}
+
 /* Gallery Section */
 .gallery-section {
-    background-color: #ffffff; /* Light gray */
-    padding: 50px 0;
-    text-align: center;
+    width: 100%;
+    margin-top: 30px; /* Adds space above the gallery section */
 }
 
 .gallery-section h2 {
-    font-size: 2.5em;
-    color: #2d3142; /* Dark blue-gray */
-    margin-bottom: 40px;
+    text-align: center;
+    font-size: 2.5em; /* Adjust the font size as needed */
+    margin-bottom: 30px; /* Adds space below the heading */
+    color: #2d3142; /* Dark blue-gray color */
 }
 
-.gallery {
-    margin-bottom: 50px;
-}
-
-.gallery h3 {
-    font-size: 2em;
-    color: #2d3142; /* Dark blue-gray */
-    margin-bottom: 20px;
-}
-
+/* Gallery Images */
 .gallery-images {
     display: flex;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: flex-start; /* Center images */
+    overflow-x: auto; /* Horizontal scrolling */
+    padding-bottom: 20px; /* Added padding for some spacing */
+    white-space: nowrap; /* Prevent images from wrapping into multiple rows */
 }
 
 .gallery-images img {
     width: 250px; /* Set the width of each image */
-    height: auto;
+    height: 187.5px; /* Set the height based on the 4:3 ratio */
+    object-fit: cover; /* Ensure the image fills the area without distortion */
     margin: 0 10px;
     transition: transform 0.5s ease-in-out;
 }
 
-.gallery-images:hover img {
-    transform: scale(1.1); /* Zoom effect when hovering over images */
+/* Center year headers */
+.gallery h3 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px; /* Adds space below the heading */
+    color: #2d3142; /* Dark blue-gray color */
 }
 
-/* Optional: Add rotating images effect */
-@keyframes rotateImages {
-    0% {
-        transform: translateX(0);
+/* Responsiveness for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 0; /* Remove side padding on mobile */
     }
-    100% {
-        transform: translateX(-100%);
-    }
-}
 
-.gallery-images {
-    animation: rotateImages 25s infinite alternate;
+    .home-section h1 {
+        font-size: 2em; /* Slightly smaller heading on mobile */
+    }
+
+    .home-section p {
+        font-size: 1em; /* Adjust paragraph size */
+    }
+
+    .gallery-images img {
+        width: 200px; /* Adjust image size for smaller screens */
+    }
 }
