@@ -3,37 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luke Loeffler | Personal Website</title>
+    <title>Luke Loeffler | Home</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .navbar {
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px 20px;
+        }
+        .navbar .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+        .navbar .navbar-left a {
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: block;
+        }
+        .navbar .navbar-left a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .navbar .navbar-center-wrapper {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+        .navbar .navbar-center-wrapper img {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+        }
+        .navbar .navbar-center-wrapper span {
+            color: #f2f2f2;
+        }
+        .navbar .navbar-right a {
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 14px 20px;
+        }
+        .navbar .navbar-right a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            padding: 20px;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .project {
+            margin-bottom: 20px;
+        }
+        .project h2 {
+            margin: 0;
+        }
+        .project p {
+            margin: 5px 0;
+        }
+        .project a {
+            color: #333;
+            text-decoration: none;
+        }
+        .project a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 </head>
 <body>
     <!-- Header with navigation -->
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="navbar-center-wrapper">
+            <img src="images/penguin.png" alt="Left Icon">
+            <span>Luke Loeffler</span>
+            <img src="images/conegraphicblack.png" alt="Right Icon">
+        </div>
+        <div class="navbar-right">
+            <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
+                <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
+            </a>
+        </div>
+    </div>
 
     <!-- Main content of the homepage -->
     <section class="home-section">
         <div class="container">
             <h1>Luke Loeffler</h1>
             <p>Welcome to my personal website! Feel free to explore my work, projects, and more.</p>
-            <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
-                <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon"> Visit my LinkedIn
-            </a>
         </div>
     </section>
 
     <!-- Photo Gallery Sections -->
     <section class="gallery-section">
         <h2>Photo Galleries</h2>
-
-        <!-- Gallery for 2025 -->
         <div class="gallery">
             <h3>2025</h3>
             <div class="gallery-images">
@@ -51,8 +133,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Gallery for 2024 -->
         <div class="gallery">
             <h3>2024</h3>
             <div class="gallery-images">
@@ -70,8 +150,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Gallery for 2023 -->
         <div class="gallery">
             <h3>2023</h3>
             <div class="gallery-images">
@@ -89,8 +167,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Gallery for 2022 -->
         <div class="gallery">
             <h3>2022</h3>
             <div class="gallery-images">
