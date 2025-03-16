@@ -1,30 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NCAAMB Analytics</title>
-  <link rel="stylesheet" href="style.css"> <!-- Link to your CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luke Loeffler | NCAAMB</title>
+    <link rel="icon" type="image/png" href="images/logolukebasketball.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .navbar {
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px 20px;
+        }
+        .navbar .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+        .navbar .navbar-left a {
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: block;
+        }
+        .navbar .navbar-left a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .navbar .navbar-center-wrapper {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+        .navbar .navbar-center-wrapper img {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+        }
+        .navbar .navbar-center-wrapper span {
+            color: #f2f2f2;
+        }
+        .navbar .navbar-right a {
+            color: #f2f2f2;
+            text-decoration: none;
+            padding: 14px 20px;
+        }
+        .navbar .navbar-right a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            padding: 20px;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .project {
+            margin-bottom: 20px;
+        }
+        .project h2 {
+            margin: 0;
+        }
+        .project p {
+            margin: 5px 0;
+        }
+        .project a {
+            color: #333;
+            text-decoration: none;
+        }
+        .project a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>NCAAMB Analytics Project</h1>
-  </header>
-  <section>
-    <h2>Overview</h2>
-    <p>This project provides advanced analytics for college basketball, including statistical breakdowns, rankings, and comparisons, similar to websites like KenPom, BartTorvik, and EvanMiya.</p>
-  </section>
-  <section>
-    <h2>Data Visualizations</h2>
-    <!-- Placeholder for charts/graphs or visual elements -->
-  </section>
-  <section>
-    <h2>Features</h2>
-    <ul>
-      <li>Game-by-game statistics</li>
-      <li>Team and player rankings</li>
-      <li>Advanced metrics and trends</li>
-    </ul>
-  </section>
+    <!-- Header with navigation -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="ncaamb.html">NCAAMB</a>
+            <a href="mlb.html">MLB</a>
+        </div>
+        <div class="navbar-center-wrapper">
+            <a href="index.html">
+                <img src="images/logolukebasketball.png" alt="Luke Loeffler">
+            </a>
+        </div>
+        <div class="navbar-right">
+            <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
+                <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h1>My Projects</h1>
+
+            <div class="project">
+                <h2>NCAA Men's Basketball Analytics</h2>
+                <p>Data scraping project with team rankings and projections</p>
+                <a href="ncaamb.html">NCAAMB Analytics</a>
+            </div>
+
+            <div class="project">
+                <h2>Project 2</h2>
+                <p>Description of Project 2. This project focuses on...</p>
+                <a href="https://example.com/project2" target="_blank">Learn more</a>
+            </div>
+
+            <div class="project">
+                <h2>Project 3</h2>
+                <p>Description of Project 3. The aim of this project is to...</p>
+                <a href="https://example.com/project3" target="_blank">Learn more</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
