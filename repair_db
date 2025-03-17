@@ -1,0 +1,14 @@
+import sqlite3
+
+conn = sqlite3.connect('ncaamb.db')
+cursor = conn.cursor()
+
+# Try to run this command to rebuild the database
+cursor.execute('PRAGMA integrity_check;')
+print(cursor.fetchone())
+
+# If the integrity check shows issues, you can try dumping the data to a new database:
+cursor.execute('.output dump.sql')
+cursor.execute('.dump')
+cursor.close()
+conn.close()

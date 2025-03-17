@@ -9,3 +9,5 @@ tables = cursor.fetchall()
 print("Existing tables:", tables)
 
 conn.close()
+
+conn.execute('PRAGMA database_list;')
