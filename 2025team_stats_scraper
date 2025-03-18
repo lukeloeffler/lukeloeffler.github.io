@@ -1,0 +1,114 @@
+import requests
+from bs4 import BeautifulSoup
+import sqlite3
+
+# Connect to SQLite database
+conn = sqlite3.connect("ncaamb.db")
+cursor = conn.cursor()
+
+# Clear table to refresh and reset id
+cursor.execute("DELETE FROM team_stats")
+cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'team_stats'")
+print("Table team_stats cleared and sequence reset.")
+
+# URL to scrape
+url = "https://www.sports-reference.com/cbb/seasons/men/2025-school-stats.html"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+# Find all team rows inside the stats table
+rows = soup.find_all("tr")
+
+print("Rows found:", len(rows))  # Verify number of rows found in "tr"
+
+for row in rows:
+    if 'over_header' in row.get('class', []) or 'thead' in row.get('class', []):
+        continue
+    try:
+        school_name_td = row.find("td", {"data-stat": "school_name"})
+        if school_name_td and school_name_td.find("a"): #check that the td and the a tag were found.
+            team_name = school_name_td.find("a").text.strip()
+            games = int(row.find("td", {"data-stat": "g"}).text.strip())
+            wins = int(row.find("td", {"data-stat": "wins"}).text.strip())
+            losses = int(row.find("td", {"data-stat": "losses"}).text.strip())
+            win_pct = float(row.find("td", {"data-stat": "win_loss_pct"}).text.strip())
+            conf_wins = int(row.find("td", {"data-stat": "wins_conf"}).text.strip())
+            conf_losses = int(row.find("td", {"data-stat": "losses_conf"}).text.strip())
+            home_wins = int(row.find("td", {"data-stat": "wins_home"}).text.strip())
+            home_losses = int(row.find("td", {"data-stat": "losses_home"}).text.strip())
+            away_wins = int(row.find("td", {"data-stat": "wins_visitor"}).text.strip())
+            away_losses = int(row.find("td", {"data-stat": "losses_visitor"}).text.strip())
+            points = int(row.find("td", {"data-stat": "pts"}).text.strip())
+            opp_points = int(row.find("td", {"data-stat": "opp_pts"}).text.strip())
+            fg_made = int(row.find("td", {"data-stat": "fg"}).text.strip())
+            fg_attempted = int(row.find("td", {"data-stat": "fga"}).text.strip())
+            three_made = int(row.find("td", {"data-stat": "fg3"}).text.strip())
+            three_attempted = int(row.find("td", {"data-stat": "fg3a"}).text.strip())
+            ft_made = int(row.find("td", {"data-stat": "ft"}).text.strip())
+            ft_attempted = int(row.find("td", {"data-stat": "fta"}).text.strip())
+            off_rebounds = int(row.find("td", {"data-stat": "orb"}).text.strip())
+            total_rebounds = int(row.find("td", {"data-stat": "trb"}).text.strip())
+            assists = int(row.find("td", {"data-stat": "ast"}).text.strip())
+            steals = int(row.find("td", {"data-stat": "stl"}).text.strip())
+            blocks = int(row.find("td", {"data-stat": "blk"}).text.strip())
+            turnovers = int(row.find("td", {"data-stat": "tov"}).text.strip())
+            personal_fouls = int(row.find("td", {"data-stat": "pf"}).text.strip())
+
+            # # Print the extracted data
+            # print("Team Name:", team_name)
+            # print("Games:", games)
+            # print("Wins:", wins)
+            # print("Losses:", losses)
+            # print("Win %:", win_pct)
+            # print("Conf Wins:", conf_wins)
+            # print("Conf Losses:", conf_losses)
+            # print("Home Wins:", home_wins)
+            # print("Home Losses:", home_losses)
+            # print("Away Wins:", away_wins)
+            # print("Away Losses:", away_losses)
+            # print("Points:", points)
+            # print("Opp Points:", opp_points)
+            # print("FG Made:", fg_made)
+            # print("FG Attempted:", fg_attempted)
+            # print("3P Made:", three_made)
+            # print("3P Attempted:", three_attempted)
+            # print("FT Made:", ft_made)
+            # print("FT Attempted:", ft_attempted)
+            # print("Off Rebounds:", off_rebounds)
+            # print("Total Rebounds:", total_rebounds)
+            # print("Assists:", assists)
+            # print("Steals:", steals)
+            # print("Blocks:", blocks)
+            # print("Turnovers:", turnovers)
+            # print("Personal Fouls:", personal_fouls)
+            # print("-" * 20)
+
+            # Insert into database
+            cursor.execute(''' 
+                INSERT INTO team_stats (
+                    team_name, games, wins, losses, win_pct, conf_wins, conf_losses, 
+                    home_wins, home_losses, away_wins, away_losses, points, opp_points, 
+                    fg_made, fg_attempted, three_made, three_attempted, ft_made, ft_attempted, 
+                    off_rebounds, total_rebounds, assists, steals, blocks, turnovers, personal_fouls
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                team_name, games, wins, losses, win_pct, conf_wins, conf_losses, 
+                home_wins, home_losses, away_wins, away_losses, points, opp_points, 
+                fg_made, fg_attempted, three_made, three_attempted, ft_made, ft_attempted, 
+                off_rebounds, total_rebounds, assists, steals, blocks, turnovers, personal_fouls
+            ))
+            
+        else:
+            print("Skipping row, school name not found or no link")
+
+    except ValueError as e:
+        print(f"Skipping row due to conversion error: {e} - {row.text.strip()}")
+        continue
+    except AttributeError as a:
+        print(f"Skipping row due to Attribute Error: {a} - {row.text.strip()}")
+
+# Commit changes and close connection
+conn.commit()
+conn.close()
+
+print("Team stats scraped and inserted into database!")

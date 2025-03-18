@@ -83,10 +83,26 @@
         .project a:hover {
             text-decoration: underline;
         }
+        .table-container { /* New div for table scrolling */
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        table {
+            width: auto;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
-    <!-- Header with navigation -->
     <div class="navbar">
         <div class="navbar-left">
             <a href="ncaamb.html">NCAAMB</a>
@@ -106,26 +122,48 @@
 
     <div class="container">
         <div class="content">
-            <h1>My Projects</h1>
-
             <div class="project">
-                <h2>NCAA Men's Basketball Analytics</h2>
+                <h2>2025 NCAA Men's Basketball Analytics</h2>
                 <p>Data scraping project with team rankings and projections</p>
-                <a href="ncaamb.html">NCAAMB Analytics</a>
             </div>
-
-            <div class="project">
-                <h2>Project 2</h2>
-                <p>Description of Project 2. This project focuses on...</p>
-                <a href="https://example.com/project2" target="_blank">Learn more</a>
-            </div>
-
-            <div class="project">
-                <h2>Project 3</h2>
-                <p>Description of Project 3. The aim of this project is to...</p>
-                <a href="https://example.com/project3" target="_blank">Learn more</a>
+            <div class="table-container">
+                <table id="data-table">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
+
+    <script>
+        fetch('2025team_stats.json')
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('data-table');
+                const thead = table.querySelector('thead tr');
+                const tbody = table.querySelector('tbody');
+
+                if (data.length > 0) {
+                    const columns = Object.keys(data[0]);
+                    columns.forEach(column => {
+                        const th = document.createElement('th');
+                        th.textContent = column;
+                        thead.appendChild(th);
+                    });
+
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        columns.forEach(column => {
+                            const td = document.createElement('td');
+                            td.textContent = row[column];
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+                }
+            });
+    </script>
 </body>
 </html>

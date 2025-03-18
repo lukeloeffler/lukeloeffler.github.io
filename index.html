@@ -66,12 +66,22 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
         .project {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
+        }
+        .content img {
+            width: 110px;
+            height: 110px;
+            margin-right: 20px;
         }
         .project h2 {
             margin: 0;
+            font-size: 2em;
         }
         .project p {
             margin: 5px 0;
@@ -83,11 +93,26 @@
         .project a:hover {
             text-decoration: underline;
         }
+        .table-container {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        table {
+            width: auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
-</head>
 <body>
-    <!-- Header with navigation -->
     <div class="navbar">
         <div class="navbar-left">
             <a href="ncaamb.html">NCAAMB</a>
@@ -105,10 +130,27 @@
         </div>
     </div>
 
-    <!-- Main content of the homepage -->
-    <section class="home-section">
-        <div class="container">
-            <h1>Luke Loeffler</h1>
-            <p>Welcome to my personal website! Feel free to explore my work, projects, and more.</p>
+    <div class="container">
+        <div class="content">
+            <div class="project">
+                <a href="ncaamb.html">
+                    <img src="images/logolukebasketball.png" alt="Luke Loeffler">
+                </a>
+                <div>
+                    <a href="ncaamb.html"><h2>2025 College Basketball Analytics</h2></a>
+                    <p>[WIP] Data scraping project with team rankings and projections</p>
+                </div>
+            </div>
+            <div class="project">
+                <a href="mlb.html">
+                    <img src="images/logolukebaseball.png" alt="Luke Loeffler">
+                </a>
+                <div>
+                    <a href="mlb.html"><h2>2025 Major League Baseball Analytics</h2></a>
+                    <p>Coming soon!</p>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+</body>
+</html>
