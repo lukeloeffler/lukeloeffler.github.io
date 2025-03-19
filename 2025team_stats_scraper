@@ -6,32 +6,81 @@ import sqlite3
 conn = sqlite3.connect("ncaamb.db")
 cursor = conn.cursor()
 
-# Clear table to refresh and reset id
-cursor.execute("DELETE FROM team_stats")
-cursor.execute("DELETE FROM sqlite_sequence WHERE name = 'team_stats'")
-print("Table team_stats cleared and sequence reset.")
+# Drop the tables if they exist
+cursor.execute("DROP TABLE IF EXISTS team_stats")
 
-# URL to scrape
+# Create the team_stats table
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS team_stats (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        team_name TEXT UNIQUE,
+        rating REAL,
+        offensive_efficiency REAL,
+        defensive_efficiency REAL,
+        possessions REAL,
+        games INTEGER,
+        wins INTEGER,
+        losses INTEGER,
+        win_pct REAL,
+        srs REAL,
+        sos REAL,
+        conf_wins INTEGER,
+        conf_losses INTEGER,
+        home_wins INTEGER,
+        home_losses INTEGER,
+        away_wins INTEGER,
+        away_losses INTEGER,
+        points INTEGER,
+        opp_points INTEGER,
+        fg_made INTEGER,
+        fg_attempted INTEGER,
+        fg_pct REAL,
+        three_made INTEGER,
+        three_attempted INTEGER,
+        three_pct REAL,
+        ft_made INTEGER,
+        ft_attempted INTEGER,
+        ft_pct REAL,
+        off_rebounds INTEGER,
+        total_rebounds INTEGER,
+        assists INTEGER,
+        steals INTEGER,
+        blocks INTEGER,
+        turnovers INTEGER,
+        personal_fouls INTEGER,
+        ncaa_tournament INTEGER
+    )
+''')
+
+# URL to scrape team stats
 url = "https://www.sports-reference.com/cbb/seasons/men/2025-school-stats.html"
-response = requests.get(url)
-soup = BeautifulSoup(response.text, "html.parser")
 
-# Find all team rows inside the stats table
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html5lib")
+
+# Find all rows from url
 rows = soup.find_all("tr")
 
-print("Rows found:", len(rows))  # Verify number of rows found in "tr"
+# Function to calculate the rating
+def calculate_rating(oe, de, sos, oe_weight=0.35, de_weight=0.35, sos_weight=0.3):
+    """Calculates the overall team rating."""
+    rating = (oe_weight * oe) + (de_weight * (100 - de)) + (sos_weight * sos)
+    return round(rating, 2)
 
+# Process the rows and insert into the team_stats table
 for row in rows:
     if 'over_header' in row.get('class', []) or 'thead' in row.get('class', []):
         continue
     try:
         school_name_td = row.find("td", {"data-stat": "school_name"})
-        if school_name_td and school_name_td.find("a"): #check that the td and the a tag were found.
+        if school_name_td and school_name_td.find("a"):
             team_name = school_name_td.find("a").text.strip()
             games = int(row.find("td", {"data-stat": "g"}).text.strip())
             wins = int(row.find("td", {"data-stat": "wins"}).text.strip())
             losses = int(row.find("td", {"data-stat": "losses"}).text.strip())
-            win_pct = float(row.find("td", {"data-stat": "win_loss_pct"}).text.strip())
+            win_pct = round(float(row.find("td", {"data-stat": "win_loss_pct"}).text.strip()), 2)
+            srs = round(float(row.find("td", {"data-stat": "srs"}).text.strip()), 2)
+            sos = round(float(row.find("td", {"data-stat": "sos"}).text.strip()), 2)
             conf_wins = int(row.find("td", {"data-stat": "wins_conf"}).text.strip())
             conf_losses = int(row.find("td", {"data-stat": "losses_conf"}).text.strip())
             home_wins = int(row.find("td", {"data-stat": "wins_home"}).text.strip())
@@ -53,54 +102,34 @@ for row in rows:
             blocks = int(row.find("td", {"data-stat": "blk"}).text.strip())
             turnovers = int(row.find("td", {"data-stat": "tov"}).text.strip())
             personal_fouls = int(row.find("td", {"data-stat": "pf"}).text.strip())
+            ncaa_tournament = 1 if school_name_td.find("small") else 0
 
-            # # Print the extracted data
-            # print("Team Name:", team_name)
-            # print("Games:", games)
-            # print("Wins:", wins)
-            # print("Losses:", losses)
-            # print("Win %:", win_pct)
-            # print("Conf Wins:", conf_wins)
-            # print("Conf Losses:", conf_losses)
-            # print("Home Wins:", home_wins)
-            # print("Home Losses:", home_losses)
-            # print("Away Wins:", away_wins)
-            # print("Away Losses:", away_losses)
-            # print("Points:", points)
-            # print("Opp Points:", opp_points)
-            # print("FG Made:", fg_made)
-            # print("FG Attempted:", fg_attempted)
-            # print("3P Made:", three_made)
-            # print("3P Attempted:", three_attempted)
-            # print("FT Made:", ft_made)
-            # print("FT Attempted:", ft_attempted)
-            # print("Off Rebounds:", off_rebounds)
-            # print("Total Rebounds:", total_rebounds)
-            # print("Assists:", assists)
-            # print("Steals:", steals)
-            # print("Blocks:", blocks)
-            # print("Turnovers:", turnovers)
-            # print("Personal Fouls:", personal_fouls)
-            # print("-" * 20)
+            # Calculate new fields
+            fg_pct = round((fg_made / fg_attempted) * 100, 2) if fg_attempted else 0
+            three_pct = round((three_made / three_attempted) * 100, 2) if three_attempted else 0
+            ft_pct = round((ft_made / ft_attempted) * 100, 2) if ft_attempted else 0
+            possessions = round(fg_attempted + 0.44 * ft_attempted - off_rebounds + turnovers, 2)
+            offensive_efficiency = round((points / possessions) * 100 if possessions else 0, 2)
+            defensive_efficiency = round((opp_points / possessions) * 100 if possessions else 0, 2)
 
-            # Insert into database
-            cursor.execute(''' 
+            #Calculate rating
+            rating = calculate_rating(offensive_efficiency, defensive_efficiency, sos)
+
+            cursor.execute('''
                 INSERT INTO team_stats (
-                    team_name, games, wins, losses, win_pct, conf_wins, conf_losses, 
+                    team_name, rating, offensive_efficiency, defensive_efficiency, possessions, games, wins, losses, win_pct, srs, sos, conf_wins, conf_losses, 
                     home_wins, home_losses, away_wins, away_losses, points, opp_points, 
-                    fg_made, fg_attempted, three_made, three_attempted, ft_made, ft_attempted, 
-                    off_rebounds, total_rebounds, assists, steals, blocks, turnovers, personal_fouls
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    fg_made, fg_attempted, fg_pct, three_made, three_attempted, three_pct, ft_made, ft_attempted, ft_pct,
+                    off_rebounds, total_rebounds, assists, steals, blocks, turnovers, personal_fouls, ncaa_tournament
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                team_name, games, wins, losses, win_pct, conf_wins, conf_losses, 
+                team_name, rating, offensive_efficiency, defensive_efficiency, possessions, games, wins, losses, win_pct, srs, sos, conf_wins, conf_losses, 
                 home_wins, home_losses, away_wins, away_losses, points, opp_points, 
-                fg_made, fg_attempted, three_made, three_attempted, ft_made, ft_attempted, 
-                off_rebounds, total_rebounds, assists, steals, blocks, turnovers, personal_fouls
+                fg_made, fg_attempted, fg_pct, three_made, three_attempted, three_pct, ft_made, ft_attempted, ft_pct,
+                off_rebounds, total_rebounds, assists, steals, blocks, turnovers, personal_fouls, ncaa_tournament
             ))
-            
         else:
             print("Skipping row, school name not found or no link")
-
     except ValueError as e:
         print(f"Skipping row due to conversion error: {e} - {row.text.strip()}")
         continue
@@ -111,4 +140,4 @@ for row in rows:
 conn.commit()
 conn.close()
 
-print("Team stats scraped and inserted into database!")
+print("Team stats and conferences scraped and inserted into database!")
