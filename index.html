@@ -11,29 +11,42 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: rgb(102, 112, 134);
+        }
+
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
             background-color: #f0f0f0;
         }
+
         .navbar {
             background-color: #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
+
         .navbar .navbar-left {
             display: flex;
             align-items: center;
         }
+
         .navbar .navbar-left a {
             color: #f2f2f2;
             text-decoration: none;
             padding: 14px 10px;
             display: block;
         }
+
         .navbar .navbar-left a:hover {
             background-color: #ddd;
             color: black;
         }
+
         .navbar .navbar-center-wrapper {
             position: absolute;
             left: 50%;
@@ -41,26 +54,35 @@
             display: flex;
             align-items: center;
         }
+
         .navbar .navbar-center-wrapper img {
             width: 30px;
             height: 30px;
             margin: 0 10px;
         }
+
         .navbar .navbar-center-wrapper span {
             color: #f2f2f2;
         }
+
         .navbar .navbar-right a {
             color: #f2f2f2;
             text-decoration: none;
             padding: 14px 10px;
         }
+
         .navbar .navbar-right a:hover {
             background-color: #ddd;
             color: black;
         }
+
         .container {
-            padding: 20px;
+            padding: 20px 20px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            max-width: 1200px;
         }
+
         .content {
             background-color: white;
             padding: 20px;
@@ -68,89 +90,220 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
+
         .project {
+            margin-bottom: 10px;
+            text-align: left;
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            justify-content: flex-start;
         }
+
+        .project .text-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 10px;
+        }
+
         .content img {
             width: 110px;
             height: 110px;
             margin-right: 20px;
         }
+
         .project h2 {
             margin: 0;
-            font-size: 2em;
         }
+
         .project p {
             margin: 5px 0;
         }
+
         .project a {
             color: #333;
             text-decoration: none;
         }
+
         .project a:hover {
             text-decoration: underline;
         }
+
         .table-container {
             overflow-x: auto;
-            white-space: nowrap;
+            width: 100%;
+            box-sizing: border-box;
         }
+
         table {
-            width: auto;
+            width: 100%;
+            max-width: none;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 5px;
+            box-sizing: border-box;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            box-sizing: border-box;
         }
+
         th {
             background-color: #f2f2f2;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .highlighted {
+            background-color: rgb(209, 218, 252);
+        }
+
+        @media (max-width: 600px) {
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 5px;
+            }
+        }
+
+        /* Gallery Images */
+        .gallery-images {
+            display: flex;
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            white-space: nowrap;
+        }
+
+        .gallery-images img {
+            width: auto; /* Allow images to have their natural width */
+            height: 300; /* Allow images to have their natural height */
+            margin-right: 10px; /* Adjust margin as needed */
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-left">
-            <a href="ncaamb.html">NCAAMB</a>
-            <a href="mlb.html">MLB</a>
-        </div>
-        <div class="navbar-center-wrapper">
-            <a href="index.html">
-                <img src="images/logoluke.png" alt="Luke Loeffler">
-            </a>
-        </div>
-        <div class="navbar-right">
-            <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
-                <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
-            </a>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="content">
-            <div class="project">
-                <a href="ncaamb.html">
-                    <img src="images/logolukebasketball.png" alt="Luke Loeffler">
+    <div class="wrapper">
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="ncaamb.html">NCAAMB</a>
+                <a href="mlb.html">MLB</a>
+            </div>
+            <div class="navbar-center-wrapper">
+                <a href="index.html">
+                    <img src="images/logoluke.png" alt="Luke Loeffler">
                 </a>
-                <div>
-                    <a href="ncaamb.html"><h2>2025 College Basketball Analytics</h2></a>
-                    <p>[WIP] Data scraping project with team rankings and projections</p>
+            </div>
+            <div class="navbar-right">
+                <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
+                    <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
+                </a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="content">
+                <div class="project">
+                    <a href="ncaamb.html">
+                        <img src="images/logolukebasketball.png" alt="Luke Loeffler">
+                    </a>
+                    <div class="text-container">
+                        <a href="ncaamb.html"><h2>2025 College Basketball Analytics</h2></a>
+                        <p>[WIP] Data scraping project with team rankings and projections</p>
+                    </div>
+                </div>
+                <div class="project">
+                    <a href="mlb.html">
+                        <img src="images/logolukebaseball.png" alt="Luke Loeffler">
+                    </a>
+                    <div class="text-container">
+                        <a href="mlb.html"><h2>2025 Major League Baseball Analytics</h2></a>
+                        <p>Coming soon!</p>
+                    </div>
                 </div>
             </div>
-            <div class="project">
-                <a href="mlb.html">
-                    <img src="images/logolukebaseball.png" alt="Luke Loeffler">
-                </a>
-                <div>
-                    <a href="mlb.html"><h2>2025 Major League Baseball Analytics</h2></a>
-                    <p>Coming soon!</p>
-                </div>
+        </div>
+
+        <div class="container">
+            <div class="content">
+                <section class="gallery-section">
+                    <h2>Photo Galleries</h2>
+                    <div class="gallery">
+                        <h3>2025</h3>
+                        <div class="gallery-images">
+                            <div class="image-track">
+                                <img src="images/2025_1.jpg" alt="2025 Photo 1">
+                                <img src="images/2025_2.jpg" alt="2025 Photo 2">
+                                <img src="images/2025_3.jpg" alt="2025 Photo 3">
+                                <img src="images/2025_4.jpg" alt="2025 Photo 4">
+                                <img src="images/2025_5.jpg" alt="2025 Photo 5">
+                                <img src="images/2025_6.jpg" alt="2025 Photo 6">
+                                <img src="images/2025_7.jpg" alt="2025 Photo 7">
+                                <img src="images/2025_8.jpg" alt="2025 Photo 8">
+                                <img src="images/2025_9.jpg" alt="2025 Photo 9">
+                                <img src="images/2025_10.jpg" alt="2025 Photo 10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery">
+                        <h3>2024</h3>
+                        <div class="gallery-images">
+                            <div class="image-track">
+                                <img src="images/2024_1.jpg" alt="2024 Photo 1">
+                                <img src="images/2024_2.jpg" alt="2024 Photo 2">
+                                <img src="images/2024_3.jpg" alt="2024 Photo 3">
+                                <img src="images/2024_4.jpg" alt="2024 Photo 4">
+                                <img src="images/2024_5.jpg" alt="2024 Photo 5">
+                                <img src="images/2024_6.jpg" alt="2024 Photo 6">
+                                <img src="images/2024_7.jpg" alt="2024 Photo 7">
+                                <img src="images/2024_8.jpg" alt="2024 Photo 8">
+                                <img src="images/2024_9.jpg" alt="2024 Photo 9">
+                                <img src="images/2024_10.jpg" alt="2024 Photo 10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery">
+                        <h3>2023</h3>
+                        <div class="gallery-images">
+                            <div class="image-track">
+                                <img src="images/2023_1.jpg" alt="2023 Photo 1">
+                                <img src="images/2023_2.jpg" alt="2023 Photo 2">
+                                <img src="images/2023_3.jpg" alt="2023 Photo 3">
+                                <img src="images/2023_4.jpg" alt="2023 Photo 4">
+                                <img src="images/2023_5.jpg" alt="2023 Photo 5">
+                                <img src="images/2023_6.jpg" alt="2023 Photo 6">
+                                <img src="images/2023_7.jpg" alt="2023 Photo 7">
+                                <img src="images/2023_8.jpg" alt="2023 Photo 8">
+                                <img src="images/2023_9.jpg" alt="2023 Photo 9">
+                                <img src="images/2023_10.jpg" alt="2023 Photo 10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gallery">
+                        <h3>2022</h3>
+                        <div class="gallery-images">
+                            <div class="image-track">
+                                <img src="images/2022_1.jpg" alt="2022 Photo 1">
+                                <img src="images/2022_2.jpg" alt="2022 Photo 2">
+                                <img src="images/2022_3.jpg" alt="2022 Photo 3">
+                                <img src="images/2022_4.jpg" alt="2022 Photo 4">
+                                <img src="images/2022_5.jpg" alt="2022 Photo 5">
+                                <img src="images/2022_6.jpg" alt="2022 Photo 6">
+                                <img src="images/2022_7.jpg" alt="2022 Photo 7">
+                                <img src="images/2022_8.jpg" alt="2022 Photo 8">
+                                <img src="images/2022_9.jpg" alt="2022 Photo 9">
+                                <img src="images/2022_10.jpg" alt="2022 Photo 10">
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
 </body>
-</html>

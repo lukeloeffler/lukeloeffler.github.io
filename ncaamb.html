@@ -11,16 +11,25 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: rgb(102, 112, 134);
+        }
+        
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
             background-color: #f0f0f0;
         }
-    
+
         .navbar {
             background-color: #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
+
     
         .navbar .navbar-left {
             display: flex;
@@ -72,6 +81,7 @@
             padding: 20px 20px;
             margin: 0 auto;
             box-sizing: border-box;
+            max-width: 1200px;
         }
     
         .content {
@@ -89,6 +99,7 @@
     
         .project h2 {
             margin: 0;
+            color: #2d3142;
         }
     
         .project p {
@@ -147,70 +158,72 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-left">
-            <a href="ncaamb.html">NCAAMB</a>
-            <a href="mlb.html">MLB</a>
-        </div>
-        <div class="navbar-center-wrapper">
-            <a href="index.html">
-                <img src="images/logolukebasketball.png" alt="Luke Loeffler">
-            </a>
-        </div>
-        <div class="navbar-right">
-            <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
-                <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
-            </a>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="content">
-            <div class="project">
-                <h2>LukeLoeff 2025 NCAA Men's Basketball Analytics</h2>
-                <p>Team rankings based on OE (35%), DE (35%), & SOS (30%). Highlighted teams are in the NCAA tournament.</p>
+    <div class="wrapper">
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="ncaamb.html">NCAAMB</a>
+                <a href="mlb.html">MLB</a>
             </div>
-            <div class="table-container">
-                <table id="data-table">
-                    <thead>
-                        <tr></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="navbar-center-wrapper">
+                <a href="index.html">
+                    <img src="images/logolukebasketball.png" alt="Luke Loeffler">
+                </a>
+            </div>
+            <div class="navbar-right">
+                <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
+                    <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
+                </a>
             </div>
         </div>
-    </div>
 
-    <script>
-        fetch('2025team_stats.json')
-            .then(response => response.json())
-            .then(data => {
-                const table = document.getElementById('data-table');
-                const thead = table.querySelector('thead tr');
-                const tbody = table.querySelector('tbody');
+        <div class="container">
+            <div class="content">
+                <div class="project">
+                    <h2>LukeLoeff 2025 NCAA Men's Basketball Analytics</h2>
+                    <p>Team rankings based on OE (35%), DE (35%), & SOS (30%). Highlighted teams are in the NCAA tournament.</p>
+                </div>
+                <div class="table-container">
+                    <table id="data-table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-                if (data.length > 0) {
-                    const columns = Object.keys(data[0]);
-                    columns.forEach(column => {
-                        const th = document.createElement('th');
-                        th.textContent = column;
-                        thead.appendChild(th);
-                    });
+        <script>
+            fetch('2025team_stats.json')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('data-table');
+                    const thead = table.querySelector('thead tr');
+                    const tbody = table.querySelector('tbody');
 
-                    data.forEach(row => {
-                        const tr = document.createElement('tr');
-                        if (row.MM === 1) { // Check if MM is 1
-                            tr.classList.add('highlighted'); // Add the highlighted class
-                        }
+                    if (data.length > 0) {
+                        const columns = Object.keys(data[0]);
                         columns.forEach(column => {
-                            const td = document.createElement('td');
-                            td.textContent = row[column];
-                            tr.appendChild(td);
+                            const th = document.createElement('th');
+                            th.textContent = column;
+                            thead.appendChild(th);
                         });
-                        tbody.appendChild(tr);
-                    });
-                }
-            });
-    </script>
+
+                        data.forEach(row => {
+                            const tr = document.createElement('tr');
+                            if (row.MM === 1) { // Check if MM is 1
+                                tr.classList.add('highlighted'); // Add the highlighted class
+                            }
+                            columns.forEach(column => {
+                                const td = document.createElement('td');
+                                td.textContent = row[column];
+                                tr.appendChild(td);
+                            });
+                            tbody.appendChild(tr);
+                        });
+                    }
+                });
+        </script>
+    </div>
 </body>
 </html>
