@@ -1,0 +1,130 @@
+import requests
+from bs4 import BeautifulSoup
+import sqlite3
+
+# Connect to SQLite database
+conn = sqlite3.connect("mlb.db")
+cursor = conn.cursor()
+
+# Drop the tables if they exist
+cursor.execute("DROP TABLE IF EXISTS batting")
+
+# Create the batting table
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS batting (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        team TEXT UNIQUE,
+        batters_count INTEGER,
+        batters_age REAL,
+        runs_game REAL,
+        games INTEGER,
+        plate_appearances INTEGER,
+        at_bats INTEGER,
+        runs INTEGER,
+        hits INTEGER,  
+        doubles INTEGER,
+        triples INTEGER,
+        home_runs INTEGER,
+        runs_batted_in INTEGER,
+        stolen_bases INTEGER,
+        caught_stealing INTEGER,
+        balls_walks_bases INTEGER,
+        strikeouts INTEGER,
+        batting_average REAL,
+        on_base_pct REAL,
+        slugging_pct REAL,
+        on_base_slugging REAL,
+        on_base_sligging_plus INTEGER,
+        total bases INTEGER,
+        left_on_base INTEGER
+    )
+''')
+
+# URL to scrape team stats
+url = "https://www.baseball-reference.com/leagues/majors/2025.shtml"
+
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html5lib")
+
+# Find all rows from url
+rows = soup.find_all("tr")
+
+# Debugging: Check if rows were found
+if not rows:
+    print("No rows found in the HTML table!")
+else:
+    print(f"Found {len(rows)} rows in the HTML table.")
+
+# Process the rows and insert into the team_stats table
+for row in rows:
+    if 'over_header' in row.get('class', []) or 'thead' in row.get('class', []) or 'league_average_table' in row.get('class', []):
+        continue
+    try:
+        team_name_td = row.find("td", {"data-stat": "team_name"})
+        if team_name_td and team_name_td.find("a"):
+            team_name = team_name_td.find("a").text.strip()
+            batters_count = int(row.find("td", {"data-stat": "batters_used"}).text.strip())
+            batters_age = round(float(row.find("td", {"data-stat": "age_bat"}).text.strip()), 2)
+            runs_game = round(float(row.find("td", {"data-stat": "runs_per_game"}).text.strip()), 2)
+            games = int(row.find("td", {"data-stat": "G"}).text.strip())
+            plate_appearances = int(row.find("td", {"data-stat": "PA"}).text.strip())
+            at_bats = int(row.find("td", {"data-stat": "AB"}).text.strip())
+            runs = int(row.find("td", {"data-stat": "R"}).text.strip())
+            hits = int(row.find("td", {"data-stat": "H"}).text.strip())
+            doubles = int(row.find("td", {"data-stat": "2B"}).text.strip())
+            triples = int(row.find("td", {"data-stat": "3B"}).text.strip())
+            home_runs = int(row.find("td", {"data-stat": "HR"}).text.strip())
+            runs_batted_in = int(row.find("td", {"data-stat": "RBI"}).text.strip())
+            stolen_bases = int(row.find("td", {"data-stat": "SB"}).text.strip())
+            caught_stealing = int(row.find("td", {"data-stat": "CS"}).text.strip())
+            balls_walks_bases = int(row.find("td", {"data-stat": "BB"}).text.strip())
+            strikeouts = int(row.find("td", {"data-stat": "SO"}).text.strip())
+            batting_average = round(float(row.find("td", {"data-stat": "batting_avg"}).text.strip()), 2)
+            on_base_pct = round(float(row.find("td", {"data-stat": "onbase_perc"}).text.strip()), 2)
+            slugging_pct = round(float(row.find("td", {"data-stat": "slugging_perc"}).text.strip()), 2)
+            on_base_slugging = round(float(row.find("td", {"data-stat": "onbase_plus_slugging"}).text.strip()), 2)
+            on_base_sligging_plus = int(row.find("td", {"data-stat": "onbase_plus_slugging_plus"}).text.strip())
+            total_bases = int(row.find("td", {"data-stat": "TB"}).text.strip())
+            left_on_base = int(row.find("td", {"data-stat": "LOB"}).text.strip())
+
+            ## Calculate new fields
+            # fg_pct = round((fg_made / fg_attempted) * 100, 2) if fg_attempted else 0
+            # three_pct = round((three_made / three_attempted) * 100, 2) if three_attempted else 0
+            # ft_pct = round((ft_made / ft_attempted) * 100, 2) if ft_attempted else 0
+            # possessions = round(fg_attempted + 0.44 * ft_attempted - off_rebounds + turnovers, 2)
+            # offensive_efficiency = round((points / possessions) * 100 if possessions else 0, 2)
+            # defensive_efficiency = round((opp_points / possessions) * 100 if possessions else 0, 2)
+
+            ## Calculate rating
+            # rating = calculate_rating(offensive_efficiency, defensive_efficiency, sos)
+
+            cursor.execute('''
+                INSERT INTO batting (
+                    team, batters_count, batters_age, runs_game, games,
+                    plate_appearances, at_bats, runs, hits, doubles,
+                    triples, home_runs, runs_batted_in, stolen_bases, caught_stealing,
+                    balls_walks_bases, strikeouts, batting_average, on_base_pct,
+                    slugging_pct, on_base_slugging, on_base_sligging_plus, total_bases, left_on_base
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
+            ''', (
+                team, batters_count, batters_age, runs_game, games,
+                plate_appearances, at_bats, runs, hits, doubles,
+                triples, home_runs, runs_batted_in, stolen_bases, caught_stealing,
+                balls_walks_bases, strikeouts, batting_average, on_base_pct,
+                slugging_pct, on_base_slugging, on_base_sligging_plus, total_bases, left_on_base
+            ))
+        else:
+            print("Skipping row, school name not found or no link")
+    except ValueError as e:
+        print(f"Skipping row due to conversion error: {e} - {row.text.strip()}")
+        continue
+    except AttributeError as a:
+        print(f"Skipping row due to Attribute Error: {a} - {row.text.strip()}")
+
+# Commit changes and close connection
+conn.commit()
+conn.close()
+
+print("Batting stats scraped and inserted into database!")

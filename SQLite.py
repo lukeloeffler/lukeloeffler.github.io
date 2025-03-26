@@ -7,3 +7,10 @@ cursor = conn.cursor()
 print("Database created successfully!")
 
 conn.close()
+
+conn = sqlite3.connect("mlb.db")
+cursor = conn.cursor()
+
+print("Database created successfully!")
+
+conn.close()

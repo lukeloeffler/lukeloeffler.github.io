@@ -18,43 +18,45 @@ cursor.execute('''
     )
 ''')
 
-# Careful: cursor.execute("DROP TABLE IF EXISTS team_stats")
+conn.commit()
+conn.close()
+print("NCAAMB Tables created successfully!")
 
-# # Create TeamStats Table
-# cursor.execute('''
-# CREATE TABLE IF NOT EXISTS team_stats (
-#     id INTEGER PRIMARY KEY AUTOINCREMENT,
-#     team_name TEXT UNIQUE,
-#     conference TEXT,
-#     games INTEGER,
-#     wins INTEGER,
-#     losses INTEGER,
-#     win_pct FLOAT,
-#     conf_wins INTEGER,
-#     conf_losses INTEGER,
-#     home_wins INTEGER,
-#     home_losses INTEGER,
-#     away_wins INTEGER,
-#     away_losses INTEGER,
-#     points INTEGER,
-#     opp_points INTEGER,
-#     fg_made INTEGER,
-#     fg_attempted INTEGER,
-#     three_made INTEGER,
-#     three_attempted INTEGER,
-#     ft_made INTEGER,
-#     ft_attempted INTEGER,
-#     off_rebounds INTEGER,
-#     total_rebounds INTEGER,
-#     assists INTEGER,
-#     steals INTEGER,
-#     blocks INTEGER,
-#     turnovers INTEGER,
-#     personal_fouls INTEGER,
-#     FOREIGN KEY (team_name) REFERENCES teams(name)
-# )
-# ''')
+
+conn = sqlite3.connect("mlb.db")
+cursor = conn.cursor()
+
+# Create batting Table
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS batting (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        team TEXT UNIQUE,
+        batters_count INTEGER,
+        batters_age REAL,
+        runs_game REAL,
+        games INTEGER,
+        plate_appearances INTEGER,
+        at_bats INTEGER,
+        runs INTEGER,
+        hits INTEGER,  
+        doubles INTEGER,
+        triples INTEGER,
+        home_runs INTEGER,
+        runs_batted_in INTEGER,
+        stolen_bases INTEGER,
+        caught_stealing INTEGER,
+        balls_walks_bases INTEGER,
+        strikeouts INTEGER,
+        batting_average REAL,
+        on_base_pct REAL,
+        slugging_pct REAL,
+        on_base_slugging REAL,
+        on_base_sligging_plus INTEGER,
+        total bases INTEGER,
+        left_on_base INTEGER
+    )
+''')
 
 conn.commit()
 conn.close()
-print("Tables created successfully!")
+print("MLB Tables created successfully!")
