@@ -45,15 +45,18 @@ url = "https://www.baseball-reference.com/leagues/majors/2025.shtml"
 
 response = requests.get(url)
 soup = BeautifulSoup(response.text, "html5lib")
+print(soup)
 
-# Find all rows from url
-rows = soup.find_all("tr")
+# Find the table by its ID
+table = soup.find("table", {"id": "teams_standard_batting"})
+
+rows = table.find_all("tr")
 
 # Debugging: Check if rows were found
 if not rows:
-    print("No rows found in the HTML table!")
+    print("No rows found within the table!")
 else:
-    print(f"Found {len(rows)} rows in the HTML table.")
+    print(f"Found {len(rows)} rows within the table.")
 
 # Process the rows and insert into the team_stats table
 for row in rows:
@@ -62,7 +65,7 @@ for row in rows:
     try:
         team_name_td = row.find("td", {"data-stat": "team_name"})
         if team_name_td and team_name_td.find("a"):
-            team_name = team_name_td.find("a").text.strip()
+            team = team_name_td.find("a").text.strip()
             batters_count = int(row.find("td", {"data-stat": "batters_used"}).text.strip())
             batters_age = round(float(row.find("td", {"data-stat": "age_bat"}).text.strip()), 2)
             runs_game = round(float(row.find("td", {"data-stat": "runs_per_game"}).text.strip()), 2)
@@ -99,22 +102,26 @@ for row in rows:
             # rating = calculate_rating(offensive_efficiency, defensive_efficiency, sos)
 
             cursor.execute('''
-                INSERT INTO batting (
-                    team, batters_count, batters_age, runs_game, games,
-                    plate_appearances, at_bats, runs, hits, doubles,
-                    triples, home_runs, runs_batted_in, stolen_bases, caught_stealing,
-                    balls_walks_bases, strikeouts, batting_average, on_base_pct,
-                    slugging_pct, on_base_slugging, on_base_sligging_plus, total_bases, left_on_base
-                ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                )
-            ''', (
-                team, batters_count, batters_age, runs_game, games,
-                plate_appearances, at_bats, runs, hits, doubles,
-                triples, home_runs, runs_batted_in, stolen_bases, caught_stealing,
-                balls_walks_bases, strikeouts, batting_average, on_base_pct,
-                slugging_pct, on_base_slugging, on_base_sligging_plus, total_bases, left_on_base
-            ))
+                INSERT INTO batting (team, batters_count) VALUES (?, ?)
+            ''', (team, batters_count))
+
+            # cursor.execute('''
+            #     INSERT INTO batting (
+            #         team, batters_count, batters_age, runs_game, games,
+            #         plate_appearances, at_bats, runs, hits, doubles,
+            #         triples, home_runs, runs_batted_in, stolen_bases, caught_stealing,
+            #         balls_walks_bases, strikeouts, batting_average, on_base_pct,
+            #         slugging_pct, on_base_slugging, on_base_sligging_plus, total_bases, left_on_base
+            #     ) VALUES (
+            #         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            #     )
+            # ''', (
+            #     team, batters_count, batters_age, runs_game, games,
+            #     plate_appearances, at_bats, runs, hits, doubles,
+            #     triples, home_runs, runs_batted_in, stolen_bases, caught_stealing,
+            #     balls_walks_bases, strikeouts, batting_average, on_base_pct,
+            #     slugging_pct, on_base_slugging, on_base_sligging_plus, total_bases, left_on_base
+            # ))
         else:
             print("Skipping row, school name not found or no link")
     except ValueError as e:
