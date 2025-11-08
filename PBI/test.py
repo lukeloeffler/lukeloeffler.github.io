@@ -1,181 +1,88 @@
-# import requests
-# from bs4 import BeautifulSoup, Comment
-# import pandas as pd
-# import math
-
-# url = "https://www.sports-reference.com/cbb/seasons/men/2026-school-stats.html"
-# resp = requests.get(url)
-# html = resp.text
-# soup = BeautifulSoup(html, "html5lib")
-
-# # helper parsers
-# def parse_int(td):
-#     try:
-#         s = td.text.strip()
-#         if s == "" or s.upper() == "DUMMY":
-#             return None
-#         # sometimes they use "iz" classes but text may be empty
-#         return int(float(s))  # handles "0" or "0.0"
-#     except Exception:
-#         return None
-
-# def parse_float(td, percent=False, keep_fraction=False):
-#     """Parse numeric strings robustly.
-#     - percent=True: convert .468 or 0.468 -> 46.8
-#     - keep_fraction=True: keep as fraction (0.468) rather than percent
-#     """
-#     try:
-#         s = td.text.strip()
-#         if s == "" or s.upper() == "DUMMY":
-#             return None
-#         # remove commas
-#         s = s.replace(",", "")
-#         # handle values like ".468"
-#         if s.startswith("."):
-#             val = float(s)
-#         else:
-#             val = float(s)
-#         if percent:
-#             # if already looks like a fraction (<=1), convert to percent
-#             if 0 <= val <= 1 and not keep_fraction:
-#                 return round(val * 100, 2)
-#             else:
-#                 # it's already expressed (like "46.8"), keep as-is
-#                 return round(val, 2)
-#         else:
-#             return round(val, 3) if (abs(val) < 10 and "." in s) else int(val) if val.is_integer() else round(val, 3)
-#     except Exception:
-#         return None
-
-# # find table: prefer live table id="school-stats", fallback to commented block
-# table = soup.find("table", {"id": "school-stats"})
-# if table is None:
-#     # search comments for the table markup
-#     comments = soup.find_all(string=lambda text: isinstance(text, Comment))
-#     for c in comments:
-#         if "school-stats" in c:
-#             table = BeautifulSoup(c, "html5lib").find("table", {"id": "school-stats"})
-#             if table:
-#                 break
-
-# if table is None:
-#     raise RuntimeError("Couldn't find table with id='school-stats' on page. Inspect response.text to confirm layout.")
-
-# rows = table.find_all("tr")
-
-# data = []
-# for row in rows:
-#     # skip header/over_header rows
-#     if 'over_header' in row.get('class', []) or 'thead' in row.get('class', []):
-#         continue
-#     # make sure it's a data row (has school_name)
-#     school_name_td = row.find("td", {"data-stat": "school_name"})
-#     if not school_name_td or not school_name_td.find("a"):
-#         continue
-#     try:
-#         team_name = school_name_td.find("a").text.strip()
-#         # numeric fields (use parse_int/parse_float)
-#         games = parse_int(row.find("td", {"data-stat": "g"}))
-#         wins = parse_int(row.find("td", {"data-stat": "wins"}))
-#         losses = parse_int(row.find("td", {"data-stat": "losses"}))
-#         win_pct = parse_float(row.find("td", {"data-stat": "win_loss_pct"}), percent=False, keep_fraction=True)  # keep as fraction (1.000 -> 1.0)
-#         srs = parse_float(row.find("td", {"data-stat": "srs"}), percent=False)
-#         sos = parse_float(row.find("td", {"data-stat": "sos"}), percent=False)
-
-#         conf_wins = parse_int(row.find("td", {"data-stat": "wins_conf"}))
-#         conf_losses = parse_int(row.find("td", {"data-stat": "losses_conf"}))
-#         home_wins = parse_int(row.find("td", {"data-stat": "wins_home"}))
-#         home_losses = parse_int(row.find("td", {"data-stat": "losses_home"}))
-#         away_wins = parse_int(row.find("td", {"data-stat": "wins_visitor"}))
-#         away_losses = parse_int(row.find("td", {"data-stat": "losses_visitor"}))
-
-#         points = parse_int(row.find("td", {"data-stat": "pts"}))
-#         opp_points = parse_int(row.find("td", {"data-stat": "opp_pts"}))
-#         min_played = parse_int(row.find("td", {"data-stat": "mp"}))
-
-#         fg_made = parse_int(row.find("td", {"data-stat": "fg"}))
-#         fg_attempted = parse_int(row.find("td", {"data-stat": "fga"}))
-#         fg_pct = parse_float(row.find("td", {"data-stat": "fg_pct"}), percent=True)   # .468 -> 46.8
-
-#         three_made = parse_int(row.find("td", {"data-stat": "fg3"}))
-#         three_attempted = parse_int(row.find("td", {"data-stat": "fg3a"}))
-#         three_pct = parse_float(row.find("td", {"data-stat": "fg3_pct"}), percent=True)
-
-#         ft_made = parse_int(row.find("td", {"data-stat": "ft"}))
-#         ft_attempted = parse_int(row.find("td", {"data-stat": "fta"}))
-#         ft_pct = parse_float(row.find("td", {"data-stat": "ft_pct"}), percent=True)
-
-#         off_rebounds = parse_int(row.find("td", {"data-stat": "orb"}))
-#         total_rebounds = parse_int(row.find("td", {"data-stat": "trb"}))
-#         assists = parse_int(row.find("td", {"data-stat": "ast"}))
-#         steals = parse_int(row.find("td", {"data-stat": "stl"}))
-#         blocks = parse_int(row.find("td", {"data-stat": "blk"}))
-#         turnovers = parse_int(row.find("td", {"data-stat": "tov"}))
-#         personal_fouls = parse_int(row.find("td", {"data-stat": "pf"}))
-#         ncaa_tournament = 1 if school_name_td.find("small") else 0
-
-#         data.append({
-#             "team_name": team_name,
-#             "games": games,
-#             "wins": wins,
-#             "losses": losses,
-#             "win_pct_fraction": win_pct,   # fraction like 1.0 ; you can convert to percent if preferred
-#             "srs": srs,
-#             "sos": sos,
-#             "conf_wins": conf_wins,
-#             "conf_losses": conf_losses,
-#             "home_wins": home_wins,
-#             "home_losses": home_losses,
-#             "away_wins": away_wins,
-#             "away_losses": away_losses,
-#             "points": points,
-#             "opp_points": opp_points,
-#             "min_played": min_played,
-#             "fg_made": fg_made,
-#             "fg_attempted": fg_attempted,
-#             "fg_pct": fg_pct,
-#             "three_made": three_made,
-#             "three_attempted": three_attempted,
-#             "three_pct": three_pct,
-#             "ft_made": ft_made,
-#             "ft_attempted": ft_attempted,
-#             "ft_pct": ft_pct,
-#             "off_rebounds": off_rebounds,
-#             "total_rebounds": total_rebounds,
-#             "assists": assists,
-#             "steals": steals,
-#             "blocks": blocks,
-#             "turnovers": turnovers,
-#             "personal_fouls": personal_fouls,
-#             "ncaa_tournament": ncaa_tournament
-#         })
-#     except Exception:
-#         # skip malformed rows but continue scraping others
-#         continue
-
-# team_stats_2026 = pd.DataFrame(data)
-
-# # optional: convert win fraction to percent column if you prefer
-# if not team_stats_2026.empty and "win_pct_fraction" in team_stats_2026.columns:
-#     team_stats_2026["win_pct_percent"] = team_stats_2026["win_pct_fraction"].apply(
-#         lambda x: round(x * 100, 2) if (x is not None and x <= 1) else (round(x,2) if isinstance(x, (int,float)) else None)
-#     )
-
-# # show top rows (Power BI will read the DataFrame when this script is used there)
-# print(team_stats_2026.head())
-
-
-
-
 import requests
 from bs4 import BeautifulSoup, Comment
+import pandas as pd
+import os
 
-url = "https://www.sports-reference.com/cbb/seasons/men/2026-school-stats.html"
-html = requests.get(url).text
-soup = BeautifulSoup(html, "html5lib")
+# Define the base URL once
+BASE_URL = "https://www.sports-reference.com"
+url = f"{BASE_URL}/cbb/schools/" 
 
-# Print out the first ~2000 characters so we can view structure
-print(html[:2000])
-# You can also search for “<table” or “data‑stat=” in the code
-for table in soup.find_all("table"):
-    print("Found table with id=", table.get("id"), "class=", table.get("class"))
+print(f"Attempting to fetch data from: {url}")
+
+try:
+    response = requests.get(url, timeout=15)
+    response.raise_for_status() # Raise an error for bad status codes (4xx or 5xx)
+    html_content = response.text
+    soup = BeautifulSoup(html_content, "html.parser") 
+
+    # --- DEBUG STEP 1: Save the raw HTML to a file ---
+    file_path = "raw_cbb_schools_html.txt"
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    print(f"Successfully saved raw HTML to: {os.path.abspath(file_path)}")
+
+    # --- DEBUG STEP 2: Extract Comments and find the table ---
+    target_id = 'NCAAM_schools' 
+    comments = soup.find_all(string=lambda text: isinstance(text, Comment))
+    table_html = None
+    
+    print(f"\nFound {len(comments)} HTML comments. Searching for table ID '{target_id}'...")
+
+    # Print the start of the first 5 comments for manual inspection
+    for i, comment in enumerate(comments[:5]):
+        print(f"\n--- Start of Comment {i+1} ---")
+        print(comment.strip()[:500]) # Print first 500 characters
+        print(f"--- End of Comment {i+1} ---")
+        
+        # Check if the table ID is present in the comment
+        if f'<table class="sortable stats_table" id="{target_id}">' in comment:
+            table_html = comment
+            print(f"\n***SUCCESS: Found table ID '{target_id}' in Comment {i+1}***")
+            break
+        
+    if table_html:
+        # Re-parse the table HTML string that was inside the comment
+        table_soup = BeautifulSoup(table_html, "html.parser")
+        rows = table_soup.find("tbody").find_all("tr")
+        print(f"\nSuccessfully parsed {len(rows)} rows from the table HTML.")
+    else:
+        # Fallback: Check if the table is loaded directly (unlikely)
+        table_direct = soup.find("table", id=target_id)
+        if table_direct and table_direct.find("tbody"):
+            rows = table_direct.find("tbody").find_all("tr")
+        else:
+            print(f"\nERROR: Could not find the '{target_id}' table data in any comment or directly.")
+            rows = []
+            
+except requests.exceptions.RequestException as e:
+    print(f"\nERROR: Failed to fetch the URL. Check network connection or URL validity: {e}")
+    rows = []
+except AttributeError:
+    # Handles error if find("tbody") fails after finding the comment but before finding rows
+    print("\nERROR: Found the comment, but failed to parse the <tbody>. The table structure might be broken.")
+    rows = []
+
+# --- STEP 3: Collect Data (only runs if rows were found) ---
+data = []
+
+if rows:
+    # The rest of your data collection logic goes here (omitted for brevity)
+    # Since this is a debug script, we just confirm rows were found.
+    # We will print a simple DataFrame to confirm success.
+    for row in rows:
+        school_name_td = row.find("td", {"data-stat": "school_name"})
+        if school_name_td and school_name_td.find("a"): 
+            team_name = school_name_td.find("a").text.strip()
+            data.append({"school_name": team_name})
+            
+    team_info_table = pd.DataFrame(data)
+    print("\n--- Output DataFrame Sample ---")
+    print(team_info_table.head())
+    
+    # CRITICAL FOR POWER BI: Print the final DataFrame
+    print(team_info_table)
+else:
+    team_info_table = pd.DataFrame()
+    print("\n--- Output DataFrame Sample ---")
+    print("Empty DataFrame - Data extraction failed.")
+    print(team_info_table)
