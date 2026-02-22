@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luke Loeffler | NCAAMB</title>
-    <link rel="icon" type="image/png" href="images/logolukebasketball.png">
+    <title>Luke Loeffler | MLB</title>
+    <link rel="icon" type="image/png" href="images/logolukebaseball.png">
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -145,7 +145,29 @@
         .highlighted {
             background-color: rgb(209, 218, 252);
         }
-    
+        
+        .report-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* Space between reports */
+            align-items: center;
+            width: 100%;
+        }
+
+        .report-gallery img {
+            width: 100%;           /* Fills the container width */
+            max-width: 1000px;     /* Prevents it from being too huge on big monitors */
+            height: auto;          /* Standard fallback */
+            
+            /* The Magic Sauce */
+            aspect-ratio: 16 / 9;  
+            object-fit: contain;   /* Ensures the whole report is visible, no cropping */
+            background-color: #f9f9f9; /* Optional: subtle background for empty space */
+            
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
         @media (max-width: 600px) {
             table {
                 font-size: 12px;
@@ -166,7 +188,7 @@
             </div>
             <div class="navbar-center-wrapper">
                 <a href="index.html">
-                    <img src="images/logolukebasketball.png" alt="Luke Loeffler">
+                    <img src="images/logolukefunction.png" alt="Luke Loeffler">
                 </a>
             </div>
             <div class="navbar-right">
@@ -179,51 +201,37 @@
         <div class="container">
             <div class="content">
                 <div class="project">
-                    <h2>LukeLoeff 2025 NCAAMB Analytics</h2>
-                    <p>Team rankings based on OE (35%), DE (35%), & SOS (30%). Highlighted teams are in the NCAA DI tournament.</p>
+                    <h2>LukeLoeff 2025 Function Report</h2>
+                    <p>Power BI report sourced from a Excel sheet with manual records of every hangout in my friend group from Jan 1, 2025 to August 31, 2025.</p>
                 </div>
-                <div class="table-container">
-                    <table id="data-table">
-                        <thead>
-                            <tr></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                
+                <div class="report-gallery">
+                    <div class="report-item">
+                        <h3>General Overview</h3>
+                        <p>A high-level look at total hangout volume and group trends.</p>
+                        <img src="images/Functions_Functions.jpg" alt="Functions Overview">
+                    </div>
+
+                    <div class="report-item">
+                        <h3>Location Analysis</h3>
+                        <p>Breakdown of the most frequent meetup spots by quantity and coordinates.</p>
+                        <img src="images/Functions_Location.jpg" alt="Locations Analysis">
+                    </div>
+
+                    <div class="report-item">
+                        <h3>Individual Stats: Luke</h3>
+                        <p>Specific engagement metrics and attendance records for Luke.</p>
+                        <img src="images/Functions_Luke.jpg" alt="Luke's Stats">
+                    </div>
+
+                    <div class="report-item">
+                        <h3>Individual Stats: Sidanth</h3>
+                        <p>Specific engagement metrics and attendance records for Sidanth.</p>
+                        <img src="images/Functions_Sidanth.jpg" alt="Sidanth's Stats">
+                    </div>
                 </div>
             </div>
         </div>
-
-        <script>
-            fetch('2025team_stats.json')
-                .then(response => response.json())
-                .then(data => {
-                    const table = document.getElementById('data-table');
-                    const thead = table.querySelector('thead tr');
-                    const tbody = table.querySelector('tbody');
-
-                    if (data.length > 0) {
-                        const columns = Object.keys(data[0]);
-                        columns.forEach(column => {
-                            const th = document.createElement('th');
-                            th.textContent = column;
-                            thead.appendChild(th);
-                        });
-
-                        data.forEach(row => {
-                            const tr = document.createElement('tr');
-                            if (row.MM === 1) { // Check if MM is 1
-                                tr.classList.add('highlighted'); // Add the highlighted class
-                            }
-                            columns.forEach(column => {
-                                const td = document.createElement('td');
-                                td.textContent = row[column];
-                                tr.appendChild(td);
-                            });
-                            tbody.appendChild(tr);
-                        });
-                    }
-                });
-        </script>
     </div>
 </body>
 </html>
