@@ -35,13 +35,86 @@
     vertical-align: middle;
 }
 
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+#menuIcon {
+    display: none; /* Hidden on desktop */
+    cursor: pointer;
+}
+
+/* --- Gallery Section --- */
+.gallery-section {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.gallery-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2d3142;
+}
+
+.gallery-images {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.gallery-images img {
+    width: 250px;
+    height: 187.5px;
+    object-fit: cover;
+    margin: 0 10px;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+
+
 /* Responsiveness for smaller screens */
 @media (max-width: 768px) {
-    .container {
-        width: 100%;
-        padding: 0;
+    /* Navbar Adjustment */
+    .navbar {
+        position: relative; /* Context for absolute positioning of menu */
     }
 
+    #menuIcon {
+        display: block; /* Show hamburger */
+        font-size: 28px;
+        color: white;
+        padding: 10px;
+    }
+
+    .navbar-left {
+        display: none; /* Hide links by default */
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* Sits right below the navbar */
+        left: 0;
+        width: 100%;
+        background-color: #333;
+        z-index: 1000;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* This class is toggled by JavaScript */
+    .navbar-left.active {
+        display: flex;
+    }
+
+    .navbar-left a {
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #444;
+    }
+
+    /* Gallery Adjustment */
     .gallery-images img {
         width: 200px;
     }

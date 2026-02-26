@@ -31,19 +31,19 @@
         }
 
     
-        .navbar .navbar-left {
+        .navbar-left {
             display: flex;
             align-items: center;
         }
     
-        .navbar .navbar-left a {
+        .navbar-left a {
             color: #f2f2f2;
             text-decoration: none;
             padding: 14px 10px;
             display: block;
         }
     
-        .navbar .navbar-left a:hover {
+        .navbar-left a:hover {
             background-color: #ddd;
             color: black;
         }
@@ -168,7 +168,39 @@
             border-radius: 4px;
         }
 
-        @media (max-width: 600px) {
+        #menuIcon {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            padding-right: 15px;
+        }
+
+        @media (max-width: 768px) {
+            #menuIcon {
+                display: inline-block;
+            }
+
+            .navbar-left {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: #333;
+                z-index: 1000;
+            }
+
+            .navbar-left.active {
+                display: flex;
+            }
+
+            .navbar-right {
+                display: flex;
+                align-items: center;
+            }
+
             table {
                 font-size: 12px;
             }
@@ -177,24 +209,29 @@
                 padding: 5px;
             }
         }
+
     </style>
 </head>
 <body>
     <div class="wrapper">
         <div class="navbar">
-            <div class="navbar-left">
+            <div class="navbar-left" id="navLinks">
                 <a href="ncaamb.html">NCAAMB</a>
                 <a href="functions.html">Functions</a>
             </div>
+
             <div class="navbar-center-wrapper">
                 <a href="index.html">
                     <img src="images/logolukefunction.png" alt="Luke Loeffler">
                 </a>
             </div>
+
             <div class="navbar-right">
+                <span id="menuIcon" onclick="toggleMenu()">&#9776;</span>
+                
                 <a href="https://www.linkedin.com/in/luke-loeffler1" class="linkedin-link" target="_blank">
-                    <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">LinkedIn
-                </a>
+                    <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png" alt="LinkedIn" class="linkedin-icon">
+                    </a>
             </div>
         </div>
 
@@ -233,5 +270,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById("navLinks");
+            nav.classList.toggle("active");
+        }
+    </script>
+
 </body>
 </html>
